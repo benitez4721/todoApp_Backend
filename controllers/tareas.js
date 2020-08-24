@@ -5,25 +5,25 @@ const Usuario = require("../models/usuario");
 
 
 
-const getTasks = async(req, res = response) => {
+// const getTasks = async(req, res = response) => {
     
-    try {
-        const tasks = await Tarea.find({})
-        res.json({
-            ok: true,
-            tasks
-        })
-    } catch (error) {
-        console.log(error);
-        res.status(400).json({
-            ok: true,
-            message: "Unexpected error"
-        })  
-    }
-}
+//     try {
+//         const tasks = await Tarea.find({})
+//         res.json({
+//             ok: true,
+//             tasks
+//         })
+//     } catch (error) {
+//         console.log(error);
+//         res.status(400).json({
+//             ok: true,
+//             message: "Unexpected error"
+//         })  
+//     }
+// }
 
 const getTaskByUser = async(req, res = response) => {
-    const user = req.params.id
+    const user = req.uid
     try {
         const tasks = await Tarea.find({user})
         res.json({
@@ -71,15 +71,15 @@ const createTask = async(req, res = response) => {
 }
 
 const editTask = async(req, res = response) => {
-    const tid = req.params.id
-    const name = req.body.name
+    const {_id, user, ...fields} = req.body
     try {
-        const taskExist = await Tarea.findById(tid)
+        const taskExist = await Tarea.findById(_id)
         if(taskExist){
-            await Tarea.findByIdAndUpdate(tid,{name})
+            let task = await Tarea.findByIdAndUpdate(_id,fields,{new: true})
             return res.json({
                 ok: true,
-                message: "Task updated"
+                message: "Task updated",
+                task
             })
         }
     } catch (error) {
@@ -122,7 +122,6 @@ const deleteTask = async(req, res = response) => {
 module.exports = {
     createTask,
     deleteTask,
-    getTasks,
     getTaskByUser,
     editTask
 }

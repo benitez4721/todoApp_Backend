@@ -7,9 +7,7 @@ const { verifyToken } = require("../middlewares/jwt-validation")
 
 const router = Router()
 
-router.get('/',getTasks)
-
-router.get('/:id', getTaskByUser)
+router.get('/', verifyToken,getTaskByUser)
 
 router.post('/', 
         [
@@ -18,7 +16,7 @@ router.post('/',
         FieldValidator],
         createTask
     )
-router.put('/:id', 
+router.put('/', 
         [
         verifyToken,
         check('name', 'The task name is required').not().isEmpty(),

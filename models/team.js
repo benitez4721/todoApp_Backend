@@ -11,6 +11,12 @@ const TeamSchema = Schema({
     code: {
         type: Number,
         required: true,
+    },
+
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
+        required: true
     }
 })
 
